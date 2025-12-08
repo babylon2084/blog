@@ -698,11 +698,21 @@ print("Got", len(masks), "candidate masks")</code></pre>
 
         <!-- 2. Mental model -->
         <h2 id="mental-model">2. How SAM 2.1 Thinks: A Quick Mental Model</h2>
+        <figure class="mb-6 rounded-2xl overflow-hidden border border-[color:var(--border-subtle)] shadow-card-soft">
+            <img
+            src="/assets/sam_hdl.jpg"
+            alt="High-level architecture of Segment Anything Model 2 (SAM 2)"
+            class="w-full h-auto block"
+            />
+            <figcaption class="px-4 py-3 text-[0.72rem] text-[color:var(--subtle-color)]">
+                High-level architecture of Segment Anything Model 2 (SAM 2), showing how it processes 
+                video frames with memory. In each frame, SAM2’s image encoder processes the frame, 
+                memory from previous frames is used to inform the mask decoder, and prompts 
+                (points/boxes/masks) can be applied at any frame.
+            </figcaption>
+        </figure>
         <p>
-          Even if you’re only using SAM&nbsp;2.1 on still images at first, it helps to understand the video brain that
-          sits behind it.
-        </p>
-        <p>Here’s the high-level breakdown in human terms:</p>
+          SAM&nbsp;2 is a big model with several moving parts. Here’s my mental model of how it works under the hood.
 
         <h3>2.1. Image encoder – Hiera</h3>
         <p>
@@ -1097,3 +1107,4 @@ sam.save_mask(mask, "building_mask.tif")</code></pre>
   </script>
 </body>
 </html>
+
