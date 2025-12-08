@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark scroll-smooth">
+<html lang="en" data-color-mode="light" class="scroll-smooth">
 <head>
   <meta charset="utf-8" />
   <title>Netflix x Warner Bros: what’s actually at stake (beyond the doom tweets) — Himal Blog</title>
@@ -11,22 +11,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
-  <!-- Tailwind (dark mode via class) -->
+  <!-- Tailwind -->
   <script>
     tailwind = {
       config: {
-        darkMode: 'class',
         theme: {
           extend: {
             fontFamily: {
               sans: ['Inter','system-ui','-apple-system','BlinkMacSystemFont'],
               mono: ['JetBrains Mono','ui-monospace'],
-            },
-            colors: {
-              brand: {
-                soft: '#34d399',
-                deep: '#0f172a',
-              }
             },
             boxShadow: {
               'card-soft': '0 22px 50px -26px rgba(15,23,42,0.95)',
@@ -38,22 +31,57 @@
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- Color tokens + theming -->
   <style>
-    :root { color-scheme: light dark; }
-    body {
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    :root[data-color-mode="light"] {
+      --bg-color: #ffffff;
+      --page-bg: radial-gradient(circle at top left, rgba(129,140,248,0.12), transparent 60%),
+                 radial-gradient(circle at 80% -10%, rgba(34,197,94,0.14), transparent 60%),
+                 linear-gradient(to bottom, #f9fafb, #ffffff);
+      --fg-color: #020617;
+      --muted-color: #4b5563;
+      --subtle-color: #6b7280;
+
+      --border-subtle: #e5e7eb;
+      --border-color: #e5e7eb;
+
+      --card-bg: #ffffff;
+      --card-border: #e5e7eb;
+
+      --chip-bg: #f3f4f6;
     }
 
-    /* Page background */
-    .page-shell {
-      position: relative;
-      min-height: 100vh;
-      overflow-x: hidden;
-      background:
-        radial-gradient(circle at top left, rgba(129,140,248,0.13), transparent 60%),
-        radial-gradient(circle at 80% -10%, rgba(34,197,94,0.2), transparent 60%),
-        linear-gradient(to bottom, #020617, #020617);
+    :root[data-color-mode="dark"] {
+      --bg-color: #020617;
+      --page-bg: radial-gradient(circle at top left, rgba(129,140,248,0.18), transparent 60%),
+                 radial-gradient(circle at 80% -10%, rgba(34,197,94,0.22), transparent 60%),
+                 linear-gradient(to bottom, #020617, #020617);
+      --fg-color: #e5e7eb;
+      --muted-color: #9ca3af;
+      --subtle-color: #9ca3af;
+
+      --border-subtle: #1e293b;
+      --border-color: #1e293b;
+
+      --card-bg: rgba(15,23,42,0.9);
+      --card-border: #1f2937;
+
+      --chip-bg: rgba(15,23,42,1);
     }
+
+    body {
+      background: var(--page-bg);
+      color: var(--fg-color);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+    }
+
+    .page-shell {
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
     .page-shell::before {
       content: "";
       position: fixed;
@@ -64,20 +92,9 @@
         radial-gradient(circle at 10% 100%, rgba(14,165,233,0.25), transparent 60%);
       opacity: 0.7;
       mix-blend-mode: screen;
-      animation: film-orbit 50s linear infinite alternate;
       pointer-events: none;
       z-index: -1;
-    }
-
-    .light .page-shell {
-      background:
-        radial-gradient(circle at top left, rgba(129,140,248,0.18), transparent 60%),
-        radial-gradient(circle at 80% -10%, rgba(34,197,94,0.25), transparent 60%),
-        linear-gradient(to bottom, #f9fafb, #e5f2ff);
-    }
-    .light .page-shell::before {
-      mix-blend-mode: multiply;
-      opacity: 0.5;
+      animation: film-orbit 50s linear infinite alternate;
     }
 
     @keyframes film-orbit {
@@ -86,33 +103,39 @@
       100% { transform: translate3d(-2%, 6%, 0)  scale(1.02); }
     }
 
+    :root[data-color-mode="light"] .page-shell::before {
+      opacity: 0.15;
+      mix-blend-mode: normal;
+    }
+
     /* Article typography */
     .article-body p {
       margin-top: 1rem;
       line-height: 1.7;
       font-size: 0.98rem;
+      color: var(--fg-color);
     }
+
     .article-body h2 {
-      margin-top: 2.2rem;
-      margin-bottom: 0.5rem;
-      font-size: 1.05rem;
+      margin-top: 2.25rem;
+      margin-bottom: 0.4rem;
+      font-size: 0.95rem;
       font-weight: 600;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
+      color: var(--fg-color);
     }
+
     .article-body ul {
       margin-top: 0.75rem;
       padding-left: 1.25rem;
       list-style-type: disc;
     }
+
     .article-body li {
       margin-top: 0.35rem;
       line-height: 1.6;
-    }
-    .article-body hr {
-      margin: 2.25rem 0 1.75rem;
-      border: none;
-      border-top: 1px dashed rgba(148,163,184,0.5);
+      color: var(--fg-color);
     }
 
     .meta {
@@ -122,239 +145,193 @@
       text-transform: uppercase;
     }
 
+    .article-card {
+      background-color: var(--card-bg);
+      border-color: var(--card-border);
+    }
+
+    .pill {
+      background-color: rgba(16,185,129,0.1);
+      border-color: rgba(16,185,129,0.6);
+      color: #22c55e;
+    }
+
+    /* Share pills */
+    .share-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.4rem;
+      height: 2.4rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background-color: var(--card-bg);
+      transition:
+        transform 150ms ease,
+        box-shadow 150ms ease,
+        background-color 150ms ease;
+    }
+
+    .share-pill svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: var(--fg-color);
+    }
+
+    .share-pill:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px -22px rgba(15,23,42,0.9);
+      background-color: rgba(148,163,184,0.10);
+    }
+
+    /* Color mode buttons (same as main page) */
+    :root[data-color-mode="light"] .hidden_in_light_mode {
+      display: none;
+    }
+    :root[data-color-mode="dark"] .hidden_in_dark_mode {
+      display: none;
+    }
+
+    .color_mode_button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      margin: 0;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      border-radius: 999px;
+    }
+
+    .color_mode_button svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      fill: none;
+      stroke: var(--fg-color);
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.5px;
+    }
+
+    .color_mode_button#enable_dark_mode:hover svg,
+    .color_mode_button#enable_dark_mode:focus svg {
+      outline: none;
+      fill: rgba(37,99,235,0.15);
+    }
+
+    .color_mode_button#enable_light_mode:hover svg,
+    .color_mode_button#enable_light_mode:focus svg {
+      outline: none;
+      fill: #facc15;
+    }
+
+    /* Header + footer surfaces */
+    header, footer {
+      background-color: transparent;
+      border-color: rgba(15,23,42,0.8);
+      backdrop-filter: blur(12px);
+    }
+    :root[data-color-mode="light"] header,
+    :root[data-color-mode="light"] footer {
+      background-color: #ffffff;
+      border-color: var(--border-subtle);
+    }
+
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-thumb {
       background: rgba(148,163,184,0.6);
       border-radius: 999px;
     }
   </style>
-
-  <style>
-    /* ---------- THEME PALETTE ---------- */
-
-    /* Dark is default (no extra class needed) */
-    html,
-    body {
-      background-color: #020617; /* slate-950 */
-      color: #e5e7eb;            /* slate-200 */
-    }
-
-    /* Light theme – driven by .theme-light on <html> */
-    html.theme-light,
-    html.theme-light body {
-      background-color: #ffffff;
-      color: #020617; /* near-black text */
-    }
-
-    /* Override dark backgrounds in light mode */
-    html.theme-light [class*="bg-slate-9"],
-    html.theme-light [class*="bg-slate-8"],
-    html.theme-light [class*="bg-slate-7"],
-    html.theme-light [class*="bg-slate-6"] {
-      background-color: #ffffff !important;
-    }
-
-    /* Make card borders softer in light mode */
-    html.theme-light [class*="border-slate-9"],
-    html.theme-light [class*="border-slate-8"],
-    html.theme-light [class*="border-slate-7"] {
-      border-color: #e5e7eb !important; /* slate-200 */
-    }
-
-    /* Text → blackish in light mode */
-    html.theme-light [class*="text-slate-"],
-    html.theme-light [class*="text-emerald-1"],
-    html.theme-light [class*="text-emerald-2"],
-    html.theme-light [class*="text-emerald-3"] {
-      color: #020617 !important;
-    }
-
-    /* Keep badges / tags readable in light mode */
-    html.theme-light .badge,
-    html.theme-light .chip,
-    html.theme-light .tag {
-      background-color: #f1f5f9 !important; /* slate-100 */
-      color: #020617 !important;
-      border-color: #cbd5f5 !important;
-    }
-
-    /* Header + footer surfaces */
-    html.theme-light header,
-    html.theme-light footer {
-      background-color: #ffffff !important;
-      border-color: #e5e7eb !important;
-    }
-
-    /* ---------- Toggle visuals ---------- */
-
-    /* Swap thumb side + colors on light mode */
-    html.theme-light #theme-toggle {
-      background-color: #e5e7eb;
-      border-color: #cbd5f5;
-      color: #020617;
-    }
-
-    html.theme-light .theme-toggle-thumb {
-      transform: translateX(2px); /* slide to left */
-    }
-
-    html.theme-light .theme-icon-sun {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    html.theme-light .theme-icon-moon {
-      opacity: 0;
-      transform: scale(0.75);
-    }
-  </style>
-    <style>
-    /* --------------------------------------------------
-    * BLOG POST LIGHT THEME OVERRIDES
-    * (for netflix-warner.html and similar article pages)
-    * -------------------------------------------------- */
-
-    /* Base surface + text */
-    html.theme-light body {
-      background: #ffffff !important;
-      color: #020617 !important; /* near-black */
-    }
-
-    /* Kill the dark radial / gradient overlays if you use them */
-    html.theme-light body::before,
-    html.theme-light body::after,
-    html.theme-light .page-shell::before,
-    html.theme-light .page-shell::after,
-    html.theme-light .page-backdrop::before,
-    html.theme-light .page-backdrop::after {
-      opacity: 0 !important;
-      background: none !important;
-    }
-
-    /* Main article content */
-    html.theme-light main,
-    html.theme-light main * {
-      color: #020617 !important;
-    }
-
-    /* The little meta card on the top right (reading time, tags, etc.) */
-    html.theme-light .article-meta,
-    html.theme-light .meta-card,
-    html.theme-light .card {
-      background-color: #ffffff !important;
-      border-color: #e5e7eb !important; /* slate-200 */
-      color: #020617 !important;
-    }
-
-    /* Pills / tags */
-    html.theme-light .chip,
-    html.theme-light .pill,
-    html.theme-light .tag {
-      background-color: #f1f5f9 !important;  /* slate-100 */
-      border-color: #e5e7eb !important;
-      color: #020617 !important;
-    }
-
-    /* Section headings inside article */
-    html.theme-light h1,
-    html.theme-light h2,
-    html.theme-light h3,
-    html.theme-light h4 {
-      color: #020617 !important;
-    }
-
-    /* Links – readable blue on white */
-    html.theme-light a {
-      color: #1d4ed8; /* blue-700 */
-    }
-    html.theme-light a:hover {
-      color: #1e40af; /* blue-800 */
-    }
-  </style>
-
 </head>
 
-<body class="dark">
+<body>
+  <!-- Hidden SVG icons for theme toggle -->
+  <svg style="display:none;">
+    <symbol viewBox="0 0 24 24" id="color_mode_control_icon_sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </symbol>
+    <symbol viewBox="0 0 24 24" id="color_mode_control_icon_moon">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </symbol>
+  </svg>
+
   <div class="page-shell">
-    <!-- HEADER -->
-    <header class="sticky top-0 z-40 backdrop-blur border-b border-slate-800/70 bg-slate-950/65 light:bg-white/75 light:border-slate-200/80">
-      <div class="max-w-5xl mx-auto px-4 sm:px-8">
+    <!-- HEADER / RIBBON (same as main page) -->
+    <header class="sticky top-0 z-40 border-b border-[color:var(--border-color)] bg-[color:transparent]">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6">
         <div class="h-14 flex items-center justify-between gap-4">
           <!-- Brand -->
-          <a href="/" class="font-mono text-[0.9em] tracking-[0.29em] text-slate-200 light:text-slate-800">
+          <a href="/index.html" class="font-mono text-xs tracking-[0.28em] uppercase text-[color:var(--subtle-color)]">
             HIMAL.BLOG
           </a>
 
           <!-- Center nav -->
-          <nav class="hidden md:flex items-center gap-6 text-[0.78rem] font-medium text-slate-300 light:text-slate-600">
-            <a href="/#posts" class="hover:text-white light:hover:text-slate-900 transition">Posts</a>
-            <a href="/#series" class="hover:text-white light:hover:text-slate-900 transition">Series</a>
-            <a href="https://himal.sh" target="_blank" rel="noreferrer" class="hover:text-white light:hover:text-slate-900 transition">Portfolio</a>
+          <nav class="hidden md:flex items-center gap-6 text-xs font-medium text-[color:var(--subtle-color)]">
+            <a href="/index.html#posts" class="hover:text-[color:var(--fg-color)] transition">Home</a>
+            <a href="https://himal.sh" target="_blank" rel="noreferrer"
+               class="hover:text-[color:var(--fg-color)] transition">
+              Portfolio
+            </a>
           </nav>
 
-          <!-- Right: socials + theme toggle -->
-          <div class="flex items-center gap-1.5">
+          <!-- Right side: social + theme -->
+          <div class="flex items-center gap-2">
             <!-- LinkedIn -->
             <a href="https://www.linkedin.com/in/gautamhimal"
                target="_blank" rel="noreferrer"
-               class="p-1.5 rounded-full hover:bg-slate-800/80 light:hover:bg-slate-200/80 transition"
+               class="p-1.5 rounded-full hover:bg-[rgba(148,163,184,0.16)] transition"
                aria-label="LinkedIn">
-              <svg viewBox="0 0 24 24" class="w-4 h-4 text-slate-200 light:text-slate-700">
-                <path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM3.5 9h3v12h-3V9zm6 0h2.8v1.7h.04c.39-.74 1.34-1.7 2.76-1.7 2.95 0 3.9 1.94 3.9 4.46V21h-3v-6.2c0-1.48-.03-3.38-2.06-3.38-2.07 0-2.39 1.62-2.39 3.28V21h-3V9z"/>
+              <svg viewBox="0 0 24 24" class="w-4 h-4 text-[color:var(--fg-color)]">
+                <path fill="currentColor"
+                      d="M4.98 3.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM3.5 9h3v12h-3V9zm6 0h2.8v1.7h.04c.39-.74 1.34-1.7 2.76-1.7 2.95 0 3.9 1.94 3.9 4.46V21h-3v-6.2c0-1.48-.03-3.38-2.06-3.38-2.07 0-2.39 1.62-2.39 3.28V21h-3V9z"/>
               </svg>
             </a>
 
             <!-- GitHub -->
             <a href="https://github.com/himalgtm"
                target="_blank" rel="noreferrer"
-               class="p-1.5 rounded-full hover:bg-slate-800/80 light:hover:bg-slate-200/80 transition"
+               class="p-1.5 rounded-full hover:bg-[rgba(148,163,184,0.16)] transition"
                aria-label="GitHub">
-              <svg viewBox="0 0 24 24" class="w-4 h-4 text-slate-200 light:text-slate-700">
+              <svg viewBox="0 0 24 24" class="w-4 h-4 text-[color:var(--fg-color)]">
                 <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"
-                  d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.08 3.29 9.38 7.86 10.9.58.11.8-.25.8-.56v-2.1c-3.2.71-3.87-1.39-3.87-1.39-.53-1.36-1.3-1.72-1.3-1.72-1.06-.74.08-.73.08-.73 1.17.08 1.78 1.21 1.78 1.21 1.04 1.79 2.73 1.27 3.4.97.11-.76.41-1.27.74-1.56-2.55-.29-5.23-1.27-5.23-5.64 0-1.25.45-2.27 1.2-3.07-.12-.3-.52-1.53.11-3.18 0 0 .98-.31 3.21 1.17a11.1 11.1 0 0 1 5.85 0c2.23-1.48 3.21-1.17 3.21-1.17.63 1.65.23 2.88.11 3.18.75.8 1.2 1.82 1.2 3.07 0 4.39-2.69 5.34-5.25 5.63.42.36.8 1.06.8 2.15v3.2c0 .31.21.68.81.56A11.51 11.51 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/>
+                      d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.08 3.29 9.38 7.86 10.9.58.11.8-.25.8-.56v-2.1c-3.2.71-3.87-1.39-3.87-1.39-.53-1.36-1.3-1.72-1.3-1.72-1.06-.74.08-.73.08-.73 1.17.08 1.78 1.21 1.78 1.21 1.04 1.79 2.73 1.27 3.4.97.11-.76.41-1.27.74-1.56-2.55-.29-5.23-1.27-5.23-5.64 0-1.25.45-2.27 1.2-3.07-.12-.3-.52-1.53.11-3.18 0 0 .98-.31 3.21 1.17a11.1 11.1 0 0 1 5.85 0c2.23-1.48 3.21-1.17 3.21-1.17.63 1.65.23 2.88.11 3.18.75.8 1.2 1.82 1.2 3.07 0 4.39-2.69 5.34-5.25 5.63.42.36.8 1.06.8 2.15v3.2c0 .31.21.68.81.56A11.51 11.51 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/>
               </svg>
             </a>
 
-            <!-- Instagram -->
+            <!-- Instagram (clean outline icon) -->
             <a href="https://instagram.com/himalgtx"
                target="_blank" rel="noreferrer"
-               class="p-1.5 rounded-full hover:bg-slate-800/80 light:hover:bg-slate-200/80 transition"
+               class="p-1.5 rounded-full hover:bg-[rgba(148,163,184,0.16)] transition"
                aria-label="Instagram">
-              <svg viewBox="0 0 24 24" class="w-4 h-4 text-slate-200 light:text-slate-700">
-                <path fill="currentColor" d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13zm0 2a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zM18 6.6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+              <svg viewBox="0 0 24 24" class="w-4 h-4 text-[color:var(--fg-color)]">
+                <rect x="3" y="3" width="18" height="18" rx="5" ry="5"
+                      fill="none" stroke="currentColor" stroke-width="1.6" />
+                <circle cx="12" cy="12" r="4"
+                        fill="none" stroke="currentColor" stroke-width="1.6" />
+                <circle cx="17" cy="7" r="1.1" fill="currentColor" />
               </svg>
             </a>
 
-            <!-- Theme toggle -->
-            <!-- Theme toggle -->
-            <button id="theme-toggle"
-              class="relative ml-1 inline-flex items-center w-12 h-7 rounded-full
-                    border border-slate-600 bg-slate-900/80 text-slate-200
-                    transition-colors duration-300
-                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
-              aria-label="Toggle theme">
-              <!-- Sun (light mode) -->
-              <span class="pointer-events-none absolute inset-y-0 left-0 flex w-1/2 items-center justify-center">
-                <svg class="theme-icon-sun w-3.5 h-3.5 opacity-0 scale-75 transition duration-300"
-                    viewBox="0 0 24 24" aria-hidden="true">
-                  <path fill="currentColor"
-                        d="M12 5.25a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5Zm0-3a.75.75 0 0 1 .75.75V5a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75Zm0 16.5a.75.75 0 0 1 .75.75V21a.75.75 0 0 1-1.5 0v-1.5a.75.75 0 0 1 .75-.75Zm8.25-6.75a.75.75 0 0 1 .75.75V12a.75.75 0 0 1-1.5 0v-.75a.75.75 0 0 1 .75-.75ZM3.75 11.25A.75.75 0 0 1 4.5 12v.75a.75.75 0 0 1-1.5 0V12a.75.75 0 0 1 .75-.75Zm13.91-5.66a.75.75 0 0 1 1.06 0l1.06 1.06a.75.75 0 0 1-1.06 1.06l-1.06-1.06a.75.75 0 0 1 0-1.06Zm-13.06 13.06a.75.75 0 0 1 1.06-1.06l1.06 1.06a.75.75 0 0 1-1.06 1.06l-1.06-1.06Zm0-12a.75.75 0 0 1 1.06-1.06l1.06 1.06A.75.75 0 0 1 5.66 7.3L4.6 6.24Zm12 12 1.06-1.06a.75.75 0 0 1 1.06 1.06L17.66 19.6a.75.75 0 1 1-1.06-1.06Z"/>
-                </svg>
-              </span>
-
-              <!-- Moon (dark mode) -->
-              <span class="pointer-events-none absolute inset-y-0 right-0 flex w-1/2 items-center justify-center">
-                <svg class="theme-icon-moon w-3.5 h-3.5 opacity-100 scale-100 transition duration-300"
-                    viewBox="0 0 24 24" aria-hidden="true">
-                  <path fill="currentColor"
-                        d="M21 12.79A9 9 0 0 1 11.21 3 7 7 0 1 0 21 12.79Z" />
-                </svg>
-              </span>
-
-              <!-- Thumb -->
-              <span class="theme-toggle-thumb absolute inline-flex h-5 w-5 translate-x-[18px] items-center justify-center
-                            rounded-full bg-white shadow-md transition-transform duration-300">
-              </span>
+            <!-- Theme toggles -->
+            <button class="color_mode_button hidden_in_light_mode"
+                    id="enable_light_mode"
+                    aria-label="Switch to light mode">
+              <svg><use href="#color_mode_control_icon_sun"></use></svg>
+            </button>
+            <button class="color_mode_button hidden_in_dark_mode"
+                    id="enable_dark_mode"
+                    aria-label="Switch to dark mode">
+              <svg><use href="#color_mode_control_icon_moon"></use></svg>
             </button>
           </div>
         </div>
@@ -367,10 +344,10 @@
       <section class="grid md:grid-cols-[minmax(0,3fr)_minmax(0,1.4fr)] gap-8 md:gap-10 items-start mb-10">
         <div>
           <p class="meta text-emerald-300 mb-3">SERIES · PERSONAL JOURNAL</p>
-          <h1 class="text-3xl md:text-4xl font-semibold tracking-tight text-slate-50 light:text-brand-deep">
+          <h1 class="text-3xl md:text-4xl font-semibold tracking-tight">
             Netflix x Warner Bros: what’s actually at stake (beyond the doom tweets)
           </h1>
-          <p class="mt-4 text-sm md:text-base text-slate-300 light:text-slate-700 max-w-xl">
+          <p class="mt-4 text-sm md:text-base" style="color: var(--muted-color); max-width: 36rem;">
             Film kid brain meets media consolidation: not a finance breakdown, but a
             feelings-and-consequences walkthrough of what it means when one platform
             grabs a massive chunk of cinema history and IP.
@@ -378,34 +355,35 @@
         </div>
 
         <!-- Side meta card -->
-        <aside class="rounded-2xl border border-slate-800/80 bg-slate-900/70 shadow-card-soft p-4 md:p-5 text-xs text-slate-300 light:bg-white/90 light:border-slate-200 light:text-slate-700">
+        <aside class="article-card rounded-2xl border shadow-card-soft p-4 md:p-5 text-xs">
           <div class="flex items-center justify-between gap-3 mb-3">
-            <span class="px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/60 text-emerald-200 light:bg-emerald-100 light:border-emerald-300 light:text-emerald-800 meta">
+            <span class="pill px-2 py-0.5 rounded-full border meta">
               Films &amp; media
             </span>
-            <span class="meta text-slate-400 light:text-slate-500">Dec · 2025</span>
+            <span class="meta text-[color:var(--subtle-color)]">Dec · 2025</span>
           </div>
           <dl class="space-y-1.5">
-            <div class="flex justify-between">
-              <dt class="text-slate-400 light:text-slate-500">Reading time</dt>
-              <dd class="font-medium text-slate-200 light:text-slate-800">~12 min</dd>
+            <div class="flex justify-between gap-4">
+              <dt class="text-[color:var(--subtle-color)]">Reading time</dt>
+              <dd class="font-medium">~12 min</dd>
             </div>
-            <div class="flex justify-between">
-              <dt class="text-slate-400 light:text-slate-500">Mood</dt>
-              <dd class="font-medium text-slate-200 light:text-slate-800">Film-obsessed, mildly stressed</dd>
+            <div class="flex justify-between gap-4">
+              <dt class="text-[color:var(--subtle-color)]">Mood</dt>
+              <dd class="font-medium">Film-obsessed, mildly stressed</dd>
             </div>
           </dl>
-          <div class="mt-3 border-t border-slate-800/80 light:border-slate-200/80 pt-3 flex flex-wrap gap-2">
-            <span class="meta text-slate-500 light:text-slate-500">Tags:</span>
-            <span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-100 text-[0.68rem] light:bg-slate-100 light:text-slate-800">Cinema</span>
-            <span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-100 text-[0.68rem] light:bg-slate-100 light:text-slate-800">Streaming</span>
-            <span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-100 text-[0.68rem] light:bg-slate-100 light:text-slate-800">Media industry</span>
+          <div class="mt-3 border-t border-[color:var(--border-subtle)] pt-3 flex flex-wrap gap-2">
+            <span class="meta text-[color:var(--subtle-color)]">Tags:</span>
+            <span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-100 text-[0.68rem]">Cinema</span>
+            <span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-100 text-[0.68rem]">Streaming</span>
+            <span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-100 text-[0.68rem]">Media industry</span>
           </div>
         </aside>
       </section>
 
       <!-- Article body -->
-      <article class="article-body max-w-3xl text-slate-200 light:text-slate-800 text-sm md:text-[0.98rem]">
+      <article class="article-body max-w-3xl text-sm md:text-[0.98rem]">
+        <!-- (your existing article paragraphs – unchanged) -->
         <p>okay so let’s talk about this netflix x warner bros thing like an actual film-obsessed human being, not a finance bro on cnbc.</p>
 
         <p>from where i’m sitting – as someone who basically lives inside letterboxd and movie theaters when life allows – this deal feels less like “the end of hollywood” and more like hollywood morphing into something smaller, more corporate, and a lot more IP-obsessed. not zero movies… but definitely less weirdness, less risk, and less oxygen for the stuff we actually fall in love with.</p>
@@ -418,7 +396,6 @@
         batman, superman, joker, harry potter, fantastic beasts, dune, mad max, barbie, friends, lotr-style fantasy spin-offs, hbo prestige stuff like succession, true detective, the last of us…, and on the game side: hogwarts legacy, mortal kombat, batman: arkham, lego games, etc. it’s like someone took half your blu-ray shelf and shoved it into one app.</p>
 
         <p>so yeah, people freaking out? understandable.</p>
-
 
         <h2>the biggest panic is about theaters.</h2>
 
@@ -435,7 +412,6 @@
 
         <p>the real casualty here isn’t “cinema as a concept.” it’s the <strong>middle</strong> of the market.</p>
 
-
         <h2>this is the part that hurts my film-lover brain the most: the mid-budget stuff.</h2>
 
         <p>the $30–70M movies that aren’t guaranteed blockbusters but can turn into magic – your original sci-fi, grounded thrillers, adult dramas, non-franchise comedies, those random films you discover one weekend and never forget. those movies already got squeezed hard by the first wave of streaming.</p>
@@ -451,7 +427,6 @@
         </ul>
 
         <p>not instant apocalypse. more like slow shrinkage and consolidation. less variety. fewer chances to randomly stumble into something non-franchise on a thursday night.</p>
-
 
         <h2>and that’s just the theatrical side. the thing that genuinely scares me more is what this does to people who <em>make</em> the stuff.</h2>
 
@@ -471,7 +446,6 @@
 
         <p>translation: if you’re not a top-tier name or directing some mega-IP, your leverage probably gets worse, not better.</p>
 
-
         <h2>then there’s the IP thing.</h2>
 
         <p>honestly, this is where i feel the “soul drain” the most. because look at what now sits under one roof: dc, harry potter, game of thrones, dune, looney tunes, scooby-doo, cartoon network, adult swim, hbo’s prestige library, plus netflix’s own heavy hitters like stranger things and squid game.</p>
@@ -479,7 +453,6 @@
         <p>once you owe investors tens of billions back, you’re not thinking, “let’s take wild artistic swings.” you’re thinking, “how many spin-offs, sequels, reboots, prequels, shared universes, and weird crossovers can we milk out of this brand?”</p>
 
         <p>it’s not that good stuff can’t come out of that (we’ve all seen amazing things done with franchise IP), but when <strong>everything</strong> is IP, everything starts to feel… narrower. like we’re living inside a loop of the same brands, reconfigured in slightly different shapes forever. less risk. less newness. less chance of something like an original barbie-style take or an oppenheimer popping through the cracks because a studio randomly decided to let someone cook.</p>
-
 
         <h2>the games angle is its own mini-story.</h2>
 
@@ -489,13 +462,11 @@
 
         <p>best case: they let wb games operate like a real studio and just add some cross-promo. worst case: games become just another tab in the “keep the user scrolling” machine.</p>
 
-
         <h2>now, to be fair, this isn’t a guaranteed straight line to doom.</h2>
 
         <p>regulators in the US and EU are very aware that “big tech eats old hollywood” could be a problem. the deal isn’t fully approved yet, and even if it passes, it might come with conditions – like rules about how netflix handles theatrical windows, licensing, or bundling. investors also aren’t as easily hypnotized by “subscriber growth” anymore; if netflix torches billions in box office just to flex on cinemas and the numbers don’t add up, the market will hit them for it.</p>
 
         <p>and whenever big studios retreat, there’s usually a counter-movement. when majors killed their specialty divisions, we eventually got A24, neon, mubi, IFC, shudder… people who <em>actually</em> care about cinema will find ways to sneak movies into theaters, especially in bigger cities and strong local scenes. i don’t think cinema as an experience just disappears. it becomes more niche, more uneven depending on where you live, more event-focused.</p>
-
 
         <h2>so where do i land on all this, as a film kid who genuinely loves sitting in a dark room with strangers and staring at a massive screen?</h2>
 
@@ -508,35 +479,134 @@
         <p>and right now, that might end up being netflix.</p>
       </article>
 
+      <!-- Share bar -->
+      <section class="max-w-3xl mt-10 pt-5 border-t border-[color:var(--border-subtle)] flex flex-wrap items-center justify-between gap-4">
+        <div class="text-xs uppercase tracking-[0.14em] text-[color:var(--subtle-color)]">
+          Share this post
+        </div>
+        <div class="flex items-center gap-3">
+          <!-- X -->
+          <button type="button" class="share-pill" data-share="x" aria-label="Share on X">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor"
+                    d="M6 4h3l3 4.5L15 4h3l-4.5 6L18 20h-3l-3-5-3 5H6l4.5-6L6 4z"/>
+            </svg>
+          </button>
+
+          <!-- Facebook -->
+          <button type="button" class="share-pill" data-share="facebook" aria-label="Share on Facebook">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor"
+                    d="M13.5 21v-7h2.25L16 10.5h-2.5V9c0-.72.24-1.25 1.4-1.25H16V6.1C15.8 6.07 15.1 6 14.3 6 12.55 6 11.4 7 11.4 8.8v1.7H9.5V14h1.9v7h2.1Z"/>
+            </svg>
+          </button>
+
+          <!-- Native share (if available) -->
+          <button type="button" class="share-pill" data-share="native" aria-label="Share with apps">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor"
+                    d="M12 3.5 7 8h3v5h4V8h3l-5-4.5Zm-7 9v7a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19.5v-7H17v7h-10v-7H5Z"/>
+            </svg>
+          </button>
+
+          <!-- Copy link -->
+          <button type="button" class="share-pill" id="copy-link" aria-label="Copy link">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor"
+                    d="M10 4a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v4a4 4 0 0 1-4 4h-2v-2h2a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2h-2V4Zm-4 4a4 4 0 0 1 4-4h2v2H10a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2h2v2a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/>
+            </svg>
+          </button>
+        </div>
+      </section>
+
       <!-- Footer -->
-      <footer class="mt-12 border-t border-slate-800/80 pt-4 text-[0.7rem] text-slate-500 flex flex-wrap items-center justify-between gap-3 light:border-slate-200/80 light:text-slate-500">
+      <footer class="mt-10 border-t border-[color:var(--border-subtle)] pt-4 text-[0.7rem] text-[color:var(--subtle-color)] flex flex-wrap items-center justify-between gap-3">
         <span>© <span id="yr"></span> Himal Gautam · Personal journal series.</span>
-        <a href="/#series" class="underline underline-offset-4 decoration-slate-500 hover:text-slate-300 light:hover:text-slate-800">← Back to all series</a>
+        <a href="/#series" class="underline underline-offset-4 decoration-slate-500 hover:text-[color:var(--fg-color)]">
+          ← Back to all series
+        </a>
       </footer>
     </main>
   </div>
 
-<script>
-  (function () {
-    const root = document.documentElement;
-    const toggle = document.getElementById('theme-toggle');
+  <script>
+    // Initial theme based on system + saved preference
+    (function () {
+      const matcher = window.matchMedia('(prefers-color-scheme: dark)');
+      const stored = localStorage.getItem('data-color-mode');
 
-    // Initial theme from localStorage or system preference
-    const stored = localStorage.getItem('theme');
-    if (stored === 'light') {
-      root.classList.add('theme-light');
-    } else if (!stored) {
-      // If no stored preference, you could auto-match system:
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-        root.classList.add('theme-light');
+      if (stored === 'dark' || (matcher.matches && !stored)) {
+        document.documentElement.setAttribute('data-color-mode', 'dark');
       }
-    }
-    // Click handler
-    toggle?.addEventListener('click', () => {
-      const isLight = root.classList.toggle('theme-light');
-      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+
+      matcher.addEventListener('change', () => {
+        const pref = localStorage.getItem('data-color-mode');
+        if (!pref) {
+          document.documentElement.setAttribute(
+            'data-color-mode',
+            matcher.matches ? 'dark' : 'light'
+          );
+        }
+      });
+    })();
+
+    // Theme toggle buttons (same behavior as main page)
+    document.querySelectorAll('.color_mode_button').forEach((button) => {
+      button.addEventListener('click', (event) => {
+        const id = event.currentTarget.id;
+        if (id === 'enable_light_mode') {
+          document.documentElement.setAttribute('data-color-mode', 'light');
+          localStorage.setItem('data-color-mode', 'light');
+        } else if (id === 'enable_dark_mode') {
+          document.documentElement.setAttribute('data-color-mode', 'dark');
+          localStorage.setItem('data-color-mode', 'dark');
+        }
+      });
     });
-  })();
-</script>
+
+    // Footer year
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // Share buttons
+    (function () {
+      const url = window.location.href;
+      const title = document.title;
+
+      document.querySelectorAll('[data-share]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const type = btn.getAttribute('data-share');
+
+          if (type === 'native' && navigator.share) {
+            try {
+              await navigator.share({ title, url });
+            } catch (_) {}
+            return;
+          }
+
+          if (type === 'x') {
+            const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+            window.open(shareUrl, '_blank', 'noopener,noreferrer');
+          } else if (type === 'facebook') {
+            const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+            window.open(shareUrl, '_blank', 'noopener,noreferrer');
+          }
+        });
+      });
+
+      // Copy link
+      const copyBtn = document.getElementById('copy-link');
+      if (copyBtn && navigator.clipboard) {
+        copyBtn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(url);
+            copyBtn.classList.add('ring-2','ring-emerald-400');
+            setTimeout(() => copyBtn.classList.remove('ring-2','ring-emerald-400'), 1200);
+          } catch {
+            alert('Could not copy link, sorry.');
+          }
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
