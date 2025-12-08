@@ -41,7 +41,7 @@
   </script>
 
   <style>
-    /* ----- COLOR MODES ----- */
+    /* ----- COLOR MODES & TOKENS ----- */
 
     :root[data-color-mode="light"] {
       --bg-color: #ffffff;
@@ -50,6 +50,9 @@
       --muted-color: #4b5563;
 
       --border-subtle: #e5e7eb;
+      --border-color: #e5e7eb;
+      --subtle-color: #6b7280;
+
       --card-bg: #ffffff;
       --card-border: #e5e7eb;
 
@@ -63,6 +66,9 @@
       --muted-color: #9ca3af;
 
       --border-subtle: #1e293b;
+      --border-color: #1e293b;
+      --subtle-color: #9ca3af;
+
       --card-bg: rgba(15,23,42,0.9);
       --card-border: #1f2937;
 
@@ -76,16 +82,28 @@
       min-height: 100vh;
     }
 
-    /* Header, cards, etc. pick up theme colors */
-    .site-header {
-      background-color: color-mix(in srgb, var(--bg-color) 90%, transparent);
-      border-bottom: 1px solid var(--border-subtle);
-      backdrop-filter: blur(12px);
+    /* Featured hero card – theme-aware gradient */
+    .feature-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1.5rem;
+      border-width: 1px;
     }
 
-    .feature-card {
-      background: var(--card-bg);
-      border-color: var(--card-border);
+    :root[data-color-mode="dark"] .feature-card {
+      background:
+        radial-gradient(circle at 0% 0%, rgba(45,212,191,0.18), transparent 55%),
+        radial-gradient(circle at 120% 140%, rgba(56,189,248,0.22), transparent 55%),
+        linear-gradient(to bottom right, #022c22, #020617);
+      border-color: rgba(16,185,129,0.45);
+    }
+
+    :root[data-color-mode="light"] .feature-card {
+      background:
+        radial-gradient(circle at 0% 0%, rgba(45,212,191,0.14), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(59,130,246,0.10), transparent 60%),
+        linear-gradient(to bottom right, #ecfdf5, #f1f5f9);
+      border-color: rgba(16,185,129,0.30);
     }
 
     .post-card,
@@ -94,64 +112,82 @@
       border-color: var(--card-border);
     }
 
-/* Netflix x Warner card with background image that respects color mode */
+    /* ---------- POST CARDS WITH PHOTO BACKGROUND ---------- */
 
-.netflix-bg {
-  position: relative;
-  background: none;           /* card bg comes from overlay */
-  color: var(--fg-color);     /* uses global text color */
-}
+    .post-card {
+      position: relative;
+      overflow: hidden;
+      border-width: 1px;
+      border-radius: 1rem;
+    }
 
-/* Image layer */
-.netflix-bg::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: url("/assets/netflix-warner.jpg");
-  background-size: cover;
-  background-position: center;
-  filter: saturate(1.1);
-  z-index: 0;
-}
+    .post-card-photo {
+      --post-image: none;
+    }
 
-/* Glass overlay – colors driven by vars above */
-.netflix-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 0% 0%, rgba(0, 0, 0, 0.06), transparent 70%),
-    linear-gradient(to right,
-      var(--netflix-overlay-from),
-      var(--netflix-overlay-to));
-  z-index: 1;
-  transition: background 200ms ease;
-}
+    .post-card-photo::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: var(--post-image);
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.03);
+      opacity: 0.65;
+      transition: transform 200ms ease, opacity 200ms ease;
+    }
 
-.netflix-bg:hover::after {
-  background:
-    radial-gradient(circle at 0% 0%, rgba(0, 0, 0, 0.08), transparent 75%),
-    linear-gradient(to right,
-      var(--netflix-overlay-hover-from),
-      var(--netflix-overlay-hover-to));
-}
+    .post-card-photo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(15,23,42,0.85),
+        rgba(15,23,42,0.3),
+        rgba(15,23,42,0.9)
+      );
+      mix-blend-mode: multiply;
+      opacity: 0.9;
+      pointer-events: none;
+    }
 
-/* Make the inner content sit above the overlays */
-.netflix-bg > .relative {
-  position: relative;
-  z-index: 2;
-}
+    .post-card-inner {
+      position: relative;
+      z-index: 1;
+      background: transparent;
+    }
 
-/* Chips on that card adapt to light/dark */
-.netflix-bg .chip-pill {
-  background-color: var(--chip-on-image-bg);
-  border-color:     var(--chip-on-image-border);
-  color:            var(--fg-color);
-}
+    .post-card-photo:hover::before {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
 
-    /* Override text color inside cards in light mode so everything is dark text */
+    /* Light mode tweaks so photos are visible but cards stay bright */
+    :root[data-color-mode="light"] .post-card-photo::after {
+      background: linear-gradient(
+        to bottom,
+        rgba(248,250,252,0.96),
+        rgba(248,250,252,0.96)
+      );
+      mix-blend-mode: normal;
+      opacity: 0.96;
+    }
+
+    :root[data-color-mode="light"] .post-card-photo::before {
+      opacity: 0.55;
+    }
+
+    .post-card .chip-pill {
+      background-color: var(--chip-bg);
+      border-color: var(--border-subtle);
+    }
+
+    /* Light-mode text overrides */
+    :root[data-color-mode="light"] .feature-card h1,
     :root[data-color-mode="light"] .feature-card h2,
     :root[data-color-mode="light"] .feature-card p,
+    :root[data-color-mode="light"] .feature-card span,
     :root[data-color-mode="light"] .post-card h3,
     :root[data-color-mode="light"] .post-card p,
     :root[data-color-mode="light"] .post-card span,
@@ -160,7 +196,7 @@
     :root[data-color-mode="light"] header span,
     :root[data-color-mode="light"] footer,
     :root[data-color-mode="light"] footer a {
-      color: #020617;
+      color: #020617 !important;
     }
 
     :root[data-color-mode="light"] .chip-pill {
@@ -168,39 +204,32 @@
       border-color: var(--border-subtle);
     }
 
-    /* Slightly tinted hero only in dark mode */
-    :root[data-color-mode="dark"] .paper {
-      background:
-        radial-gradient(circle at 0 0, rgba(148,163,184,.18), transparent 55%),
-        radial-gradient(circle at 100% 0, rgba(45,212,191,.18), transparent 55%),
-        linear-gradient(to bottom right, #020617, #020617);
+    /* Share strip buttons */
+    .share-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.4rem;
+      height: 2.4rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background-color: var(--card-bg);
+      transition:
+        transform 150ms ease,
+        box-shadow 150ms ease,
+        background-color 150ms ease;
     }
 
-    :root[data-color-mode="light"] .paper {
-      background: #ffffff;
+    .share-pill svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: var(--fg-color);
     }
 
-
-    /* Extra vars just for the Netflix banner */
-
-    :root[data-color-mode="light"] {
-      --netflix-overlay-from: rgba(255, 255, 255, 0.94);
-      --netflix-overlay-to:   rgba(241, 245, 249, 0.98);
-      --netflix-overlay-hover-from: rgba(255, 255, 255, 0.98);
-      --netflix-overlay-hover-to:   rgba(241, 245, 249, 1);
-
-      --chip-on-image-bg:    rgba(15, 23, 42, 0.06);
-      --chip-on-image-border:rgba(15, 23, 42, 0.16);
-    }
-
-    :root[data-color-mode="dark"] {
-      --netflix-overlay-from:       rgba(15, 23, 42, 0.82);
-      --netflix-overlay-to:         rgba(15, 23, 42, 0.96);
-      --netflix-overlay-hover-from: rgba(15, 23, 42, 0.9);
-      --netflix-overlay-hover-to:   rgba(15, 23, 42, 1);
-
-      --chip-on-image-bg:    rgba(15, 23, 42, 0.78);
-      --chip-on-image-border:rgba(15, 23, 42, 0.95);
+    .share-pill:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px -22px rgba(15,23,42,0.9);
+      background-color: rgba(148,163,184,0.10);
     }
 
     /* Color mode buttons */
@@ -269,67 +298,71 @@
 
   <div class="min-h-screen">
     <!-- HEADER / RIBBON -->
-    <header class="site-header sticky top-0 z-40">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <header class="sticky top-0 z-40 border-b border-[color:var(--border-color)] backdrop-blur bg-[color:transparent]">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6">
         <div class="h-14 flex items-center justify-between gap-4">
           <!-- Brand -->
-          <a href="#top" class="font-mono text-xs tracking-[0.22em] uppercase">
+          <a href="/index.html" class="font-mono text-xs tracking-[0.28em] uppercase text-[color:var(--subtle-color)]">
             HIMAL.BLOG
           </a>
 
           <!-- Center nav -->
-          <nav class="hidden md:flex items-center gap-6 text-xs font-medium">
-            <a href="#posts" class="hover:underline">Home</a>
-            <a href="https://himal.sh" class="hover:underline" target="_blank" rel="noreferrer">
+          <nav class="hidden md:flex items-center gap-6 text-xs font-medium text-[color:var(--subtle-color)]">
+            <a href="/index.html#posts" class="hover:text-[color:var(--fg-color)] transition">Home</a>
+            <a href="https://himal.sh" target="_blank" rel="noreferrer"
+               class="hover:text-[color:var(--fg-color)] transition">
               Portfolio
             </a>
           </nav>
 
-          <!-- Right: socials + theme toggle -->
-          <div class="flex items-center gap-1.5">
+          <!-- Right side: social + theme -->
+          <div class="flex items-center gap-2">
             <!-- LinkedIn -->
             <a href="https://www.linkedin.com/in/gautamhimal"
                target="_blank" rel="noreferrer"
-               class="p-1.5 rounded-full hover:bg-slate-200/70 dark:hover:bg-slate-800/80 transition"
+               class="p-1.5 rounded-full hover:bg-[rgba(148,163,184,0.16)] transition"
                aria-label="LinkedIn">
-              <svg viewBox="0 0 24 24" class="w-4 h-4">
-                <path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM3.5 9h3v12h-3V9zm6 0h2.8v1.7h.04c.39-.74 1.34-1.7 2.76-1.7 2.95 0 3.9 1.94 3.9 4.46V21h-3v-6.2c0-1.48-.03-3.38-2.06-3.38-2.07 0-2.39 1.62-2.39 3.28V21h-3V9z"/>
+              <svg viewBox="0 0 24 24" class="w-4 h-4 text-[color:var(--fg-color)]">
+                <path fill="currentColor"
+                      d="M4.98 3.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM3.5 9h3v12h-3V9zm6 0h2.8v1.7h.04c.39-.74 1.34-1.7 2.76-1.7 2.95 0 3.9 1.94 3.9 4.46V21h-3v-6.2c0-1.48-.03-3.38-2.06-3.38-2.07 0-2.39 1.62-2.39 3.28V21h-3V9z"/>
               </svg>
             </a>
 
             <!-- GitHub -->
             <a href="https://github.com/himalgtm"
                target="_blank" rel="noreferrer"
-               class="p-1.5 rounded-full hover:bg-slate-200/70 dark:hover:bg-slate-800/80 transition"
+               class="p-1.5 rounded-full hover:bg-[rgba(148,163,184,0.16)] transition"
                aria-label="GitHub">
-              <svg viewBox="0 0 24 24" class="w-4 h-4">
+              <svg viewBox="0 0 24 24" class="w-4 h-4 text-[color:var(--fg-color)]">
                 <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"
-                  d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.08 3.29 9.38 7.86 10.9.58.11.8-.25.8-.56v-2.1c-3.2.71-3.87-1.39-3.87-1.39-.53-1.36-1.3-1.72-1.3-1.72-1.06-.74.08-.73.08-.73 1.17.08 1.78 1.21 1.78 1.21 1.04 1.79 2.73 1.27 3.4.97.11-.76.41-1.27.74-1.56-2.55-.29-5.23-1.27-5.23-5.64 0-1.25.45-2.27 1.2-3.07-.12-.3-.52-1.53.11-3.18 0 0 .98-.31 3.21 1.17a11.1 11.1 0 0 1 5.85 0c2.23-1.48 3.21-1.17 3.21-1.17.63 1.65.23 2.88.11 3.18.75.8 1.2 1.82 1.2 3.07 0 4.39-2.69 5.34-5.25 5.63.42.36.8 1.06.8 2.15v3.2c0 .31.21.68.81.56A11.51 11.51 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/>
+                      d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.08 3.29 9.38 7.86 10.9.58.11.8-.25.8-.56v-2.1c-3.2.71-3.87-1.39-3.87-1.39-.53-1.36-1.3-1.72-1.3-1.72-1.06-.74.08-.73.08-.73 1.17.08 1.78 1.21 1.78 1.21 1.04 1.79 2.73 1.27 3.4.97.11-.76.41-1.27.74-1.56-2.55-.29-5.23-1.27-5.23-5.64 0-1.25.45-2.27 1.2-3.07-.12-.3-.52-1.53.11-3.18 0 0 .98-.31 3.21 1.17a11.1 11.1 0 0 1 5.85 0c2.23-1.48 3.21-1.17 3.21-1.17.63 1.65.23 2.88.11 3.18.75.8 1.2 1.82 1.2 3.07 0 4.39-2.69 5.34-5.25 5.63.42.36.8 1.06.8 2.15v3.2c0 .31.21.68.81.56A11.51 11.51 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/>
               </svg>
             </a>
 
-            <!-- Instagram -->
+            <!-- Instagram – outline icon -->
             <a href="https://instagram.com/himalgtx"
                target="_blank" rel="noreferrer"
-               class="p-1.5 rounded-full hover:bg-slate-200/70 dark:hover:bg-slate-800/80 transition"
+               class="p-1.5 rounded-full hover:bg-[rgba(148,163,184,0.16)] transition"
                aria-label="Instagram">
-              <svg viewBox="0 0 24 24" class="w-4 h-4">
-                <path fill="currentColor" d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13zm0 2a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zM18 6.6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+              <svg viewBox="0 0 24 24" class="w-4 h-4 text-[color:var(--fg-color)]">
+                <rect x="3" y="3" width="18" height="18" rx="5" ry="5"
+                      fill="none" stroke="currentColor" stroke-width="1.6" />
+                <circle cx="12" cy="12" r="4"
+                        fill="none" stroke="currentColor" stroke-width="1.6" />
+                <circle cx="17" cy="7" r="1.1" fill="currentColor" />
               </svg>
             </a>
 
-            <!-- COLOR MODE TOGGLES -->
-            <button class="color_mode_button hidden_in_light_mode" id="enable_light_mode">
-              <svg>
-                <title>Light mode</title>
-                <use href="#color_mode_control_icon_sun"></use>
-              </svg>
+            <!-- Theme toggles -->
+            <button class="color_mode_button hidden_in_light_mode"
+                    id="enable_light_mode"
+                    aria-label="Switch to light mode">
+              <svg><use href="#color_mode_control_icon_sun"></use></svg>
             </button>
-            <button class="color_mode_button hidden_in_dark_mode" id="enable_dark_mode">
-              <svg>
-                <title>Dark mode</title>
-                <use href="#color_mode_control_icon_moon"></use>
-              </svg>
+            <button class="color_mode_button hidden_in_dark_mode"
+                    id="enable_dark_mode"
+                    aria-label="Switch to dark mode">
+              <svg><use href="#color_mode_control_icon_moon"></use></svg>
             </button>
           </div>
         </div>
@@ -338,64 +371,63 @@
 
     <!-- MAIN CONTENT -->
     <main class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
-<section id="featured" class="mb-10">
-  <div class="grid md:grid-cols-[minmax(0,2.4fr)_minmax(0,1.1fr)] gap-6 items-stretch">
-    <!-- Left: existing feature article -->
-    <a href="/posts/sam2-windows-install.html"
-      class="block rounded-3xl border border-emerald-500/40 bg-gradient-to-br
-           from-emerald-500/15 via-slate-900 to-slate-950/90
-           px-6 py-6 md:px-8 md:py-7 shadow-[0_24px_60px_-32px_rgba(16,185,129,0.7)]
-           hover:shadow-[0_24px_60px_-24px_rgba(16,185,129,0.9)] transition">
-      <p class="text-[0.65rem] font-semibold tracking-[0.26em] uppercase text-emerald-300 mb-3">
-       Featured
-      </p>
-      <h1 class="text-xl md:text-2xl font-semibold text-slate-50 leading-snug">
-       Getting SAM 2 running on Windows without losing your mind
-      </h1>
-      <p class="mt-3 text-sm md:text-[0.95rem] text-emerald-50/90 max-w-2xl">
-       A step-by-step walkthrough of installing Meta's Segment Anything 2 on Windows:
-       CUDA versions, PyTorch wheels, environment setup, and a full example pipeline
-       from NAIP imagery to georeferenced masks.
-      </p>
-      <div class="mt-4 flex flex-wrap gap-2 text-[0.72rem]">
-       <span class="px-2 py-1 rounded-full bg-slate-900/70 border border-emerald-500/50 text-emerald-200">
-        Computer Vision · GeoAI
-       </span>
-       <span class="px-2 py-1 rounded-full bg-slate-900/60 border border-slate-700 text-slate-200">
-        Dec 2025
-       </span>
-       <span class="px-2 py-1 rounded-full bg-slate-900/60 border border-slate-700 text-slate-200">
-        14 min read
-       </span>
-      </div>
-    </a>
-    <aside id="about"
-            class="about-card relative overflow-hidden rounded-3xl border p-6 sm:p-7 shadow-soft
-                   flex flex-col justify-between
-                   bg-[radial-gradient(circle_at_0_0,rgba(45,212,191,0.18),transparent_55%),radial-gradient(circle_at_120%_140%,rgba(56,189,248,0.26),transparent_55%)]">
-            <!-- subtle glow ring -->
+      <!-- FEATURED HERO -->
+      <section id="featured" class="mb-10">
+        <div class="grid md:grid-cols-[minmax(0,2.4fr)_minmax(0,1.1fr)] gap-6 items-stretch">
+          <!-- Left: feature article -->
+          <article class="feature-card px-6 py-6 md:px-8 md:py-7 shadow-[0_24px_60px_-32px_rgba(16,185,129,0.7)] hover:shadow-[0_24px_60px_-24px_rgba(16,185,129,0.9)] transition">
+            <p class="text-[0.65rem] font-semibold tracking-[0.26em] uppercase text-emerald-300 mb-3">
+              Featured
+            </p>
+            <h1 class="text-xl md:text-2xl font-semibold leading-snug">
+              <a href="/posts/sam2-windows-install.html" class="hover:underline decoration-emerald-400/80">
+                Getting SAM 2 running on Windows without losing your mind
+              </a>
+            </h1>
+            <p class="mt-3 text-sm md:text-[0.95rem] max-w-2xl">
+              A step-by-step walkthrough of installing Meta's Segment Anything 2 on Windows:
+              CUDA versions, PyTorch wheels, environment setup, and a full example pipeline
+              from NAIP imagery to georeferenced masks.
+            </p>
+            <div class="mt-3 flex flex-wrap gap-2 text-[11px]">
+                <span class="chip-pill inline-flex items-center gap-1 rounded-full px-2 py-1 border">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Computer Vision · GeoAI
+                </span>
+                <span class="chip-pill inline-flex items-center gap-1 rounded-full px-2 py-1 border">
+                  <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span> Dec 2025
+                </span>
+                <span class="chip-pill inline-flex items-center gap-1 rounded-full px-2 py-1 border">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> 14 min read
+                </span>
+              </div>
+          </article>
+
+          <!-- About / warm greetings -->
+          <aside id="about"
+                 class="about-card relative overflow-hidden rounded-3xl border p-6 sm:p-7 shadow-soft
+                        flex flex-col justify-between
+                        bg-[radial-gradient(circle_at_0_0,rgba(45,212,191,0.18),transparent_55%),radial-gradient(circle_at_120%_140%,rgba(56,189,248,0.26),transparent_55%)]">
             <div class="pointer-events-none absolute -top-10 -right-10 w-32 h-32 rounded-full border border-emerald-400/40
                         [mask-image:radial-gradient(circle,white,transparent)] opacity-60"></div>
 
             <div class="relative">
-              <h2 class="text-xl font-semibold tracking-[0.16em] uppercase mb-2 text-emerald-300 mb-2">
+              <h2 class="text-xl font-semibold tracking-[0.16em] uppercase mb-2 text-emerald-300">
                 Warm Greetings
               </h2>
               <p class="text-sm leading-relaxed">
-              Thoughts are many but words that merit being spoken are few. I may or may not publish some written thoughts. Time will tell :)
+                Thoughts are many but words that merit being spoken are few. I may or may not
+                publish some written thoughts. Time will tell :)
               </p>
               <p class="mt-3 text-sm leading-relaxed">
-               Himal
+                Himal
               </p>
             </div>
           </aside>
-</section>
-
-    
-
+        </div>
+      </section>
 
       <!-- MAIN POSTS LIST -->
-      <section id="posts" class="mb-12">
+      <section id="posts" class="mb-10">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-sm font-semibold tracking-[0.22em] uppercase">
             Latest Posts
@@ -406,20 +438,16 @@
         </div>
 
         <div class="grid md:grid-cols-2 gap-6">
-          <!-- Netflix x Warner – with background image -->
+          <!-- Netflix x Warner – photo card -->
           <a href="/posts/netflix-warner.html"
-             class="post-card group relative block overflow-hidden rounded-2xl border shadow-[0_18px_40px_-26px_rgba(15,23,42,0.9)] netflix-bg">
-            <!-- image + overlay are handled by pseudo elements -->
-
-            <!-- Foreground content -->
-            <div class="relative p-5">
+             class="post-card post-card-photo group relative shadow-[0_18px_40px_-26px_rgba(15,23,42,0.9)]"
+             style="--post-image: url('/assets/netflix-warner.jpg');">
+            <div class="post-card-inner p-5">
               <div class="flex items-center justify-between gap-2 text-[0.7rem] mb-2">
                 <p class="text-xs">
                   Personal Journal • Dec 2025 · <span>11 min read</span>
                 </p>
-                <span
-                  class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-[11px]
-                         text-emerald-200 border border-emerald-400/60">
+                <span class="px-2 py-0.5 rounded-full text-[11px] border">
                   Film-obsessed rant
                 </span>
               </div>
@@ -435,25 +463,23 @@
               </p>
 
               <div class="mt-3 flex flex-wrap gap-2 text-[11px]">
-                <span
-                  class="chip-pill inline-flex items-center gap-1 rounded-full px-2 py-0.5 border">
+                <span class="chip-pill inline-flex items-center gap-1 rounded-full px-2 py-0.5 border">
                   <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Films
                 </span>
-                <span
-                  class="chip-pill inline-flex items-center gap-1 rounded-full px-2 py-0.5 border">
+                <span class="chip-pill inline-flex items-center gap-1 rounded-full px-2 py-0.5 border">
                   <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span> Cinema
                 </span>
-                <span
-                  class="chip-pill inline-flex items-center gap-1 rounded-full px-2 py-0.5 border">
+                <span class="chip-pill inline-flex items-center gap-1 rounded-full px-2 py-0.5 border">
                   <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Hollywood
                 </span>
               </div>
             </div>
           </a>
 
-          <!-- Post 1 -->
-          <article class="post-card rounded-2xl border shadow-soft">
-            <a href="/posts/geospatial-sam2-segment-geospatial" class="block p-5 sm:p-6">
+          <!-- Post 1 – NAIP tiles to tree crowns -->
+          <article class="post-card post-card-photo rounded-2xl shadow-soft"
+                   style="--post-image: url('/assets/sam2-treecrowns.png');">
+            <a href="/posts/geospatial-sam2-segment-geospatial" class="post-card-inner block p-5 sm:p-6">
               <div class="flex items-center justify-between gap-3">
                 <p class="text-xs">
                   GeoAI • Dec 2025 · <span>11 min read</span>
@@ -484,9 +510,10 @@
             </a>
           </article>
 
-          <!-- Post 2 -->
-          <article class="post-card rounded-2xl border shadow-soft">
-            <a href="/posts/hackathon-postmortem-kozi-rest" class="block p-5 sm:p-6">
+          <!-- Post 2 – Kozi.REST hackathon -->
+          <article class="post-card post-card-photo rounded-2xl shadow-soft"
+                   style="--post-image: url('/assets/kozi-rest.jpg');">
+            <a href="/posts/hackathon-postmortem-kozi-rest" class="post-card-inner block p-5 sm:p-6">
               <div class="flex items-center justify-between gap-3">
                 <p class="text-xs">
                   Hackathons • Nov 2025 · <span>8 min read</span>
@@ -517,9 +544,10 @@
             </a>
           </article>
 
-          <!-- Post 3 -->
-          <article class="post-card rounded-2xl border shadow-soft">
-            <a href="/posts/backlog-buddy-cloudflare" class="block p-5 sm:p-6">
+          <!-- Post 3 – Backlog Buddy -->
+          <article class="post-card post-card-photo rounded-2xl shadow-soft"
+                   style="--post-image: url('/assets/backlog-buddy.jpg');">
+            <a href="/posts/backlog-buddy-cloudflare" class="post-card-inner block p-5 sm:p-6">
               <div class="flex items-center justify-between gap-3">
                 <p class="text-xs">
                   Dev Notes • Nov 2025 · <span>7 min read</span>
@@ -550,9 +578,10 @@
             </a>
           </article>
 
-          <!-- Post 4 -->
-          <article class="post-card rounded-2xl border shadow-soft">
-            <a href="/posts/field-notes-first-semester-unt" class="block p-5 sm:p-6">
+          <!-- Post 4 – juggling CS, GIS, startup -->
+          <article class="post-card post-card-photo rounded-2xl shadow-soft"
+                   style="--post-image: url('/assets/juggling-cs-gis-startup.jpg');">
+            <a href="/posts/field-notes-first-semester-unt" class="post-card-inner block p-5 sm:p-6">
               <div class="flex items-center justify-between gap-3">
                 <p class="text-xs">
                   Field Notes • Oct 2025 · <span>6 min read</span>
@@ -581,27 +610,28 @@
         </div>
       </section>
 
-    <!-- FOOTER -->
-    <footer class="border-t border-slate-800/70 py-6 text-sm">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <p>© <span id="yr"></span> Himal Gautam.
-          Made with HTML, Tailwind and a lot of coffee</p>
-        <div class="flex items-center gap-4">
-          <a href="https://himal.sh" class="hover:underline" target="_blank" rel="noopener noreferrer">
-            Portfolio
-          </a>
-          <a href="mailto:himalgautam@my.unt.edu" class="hover:underline">
-            Email
-          </a>
-          <a href="https://github.com/himalgtm" class="hover:underline" target="_blank" rel="noopener noreferrer">
-            GitHub
-          </a>
+      <!-- FOOTER -->
+      <footer class="border-t border-slate-800/70 py-6 text-sm">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p>© <span id="yr"></span> Himal Gautam.
+            Made with HTML, Tailwind and a lot of coffee</p>
+          <div class="flex items-center gap-4">
+            <a href="https://himal.sh" class="hover:underline" target="_blank" rel="noopener noreferrer">
+              Portfolio
+            </a>
+            <a href="mailto:himalgautam@my.unt.edu" class="hover:underline">
+              Email
+            </a>
+            <a href="https://github.com/himalgtm" class="hover:underline" target="_blank" rel="noopener noreferrer">
+              GitHub
+            </a>
+          </div>
         </div>
-      </div>
-    </footer>
+      </footer>
+    </main>
   </div>
 
-  <!-- THEME SCRIPT -->
+  <!-- THEME + SHARE SCRIPT -->
   <script>
     // Initial theme based on system + saved preference
     (function () {
@@ -623,19 +653,16 @@
       });
     })();
 
-    // Toggle buttons
+    // Theme toggle buttons
     document.querySelectorAll('.color_mode_button').forEach((button) => {
       button.addEventListener('click', (event) => {
-        const targetElement = event.currentTarget;
-        const elementId = targetElement.id;
-        if (elementId === 'enable_light_mode') {
+        const id = event.currentTarget.id;
+        if (id === 'enable_light_mode') {
           document.documentElement.setAttribute('data-color-mode', 'light');
           localStorage.setItem('data-color-mode', 'light');
-        } else if (elementId === 'enable_dark_mode') {
+        } else if (id === 'enable_dark_mode') {
           document.documentElement.setAttribute('data-color-mode', 'dark');
           localStorage.setItem('data-color-mode', 'dark');
-        } else {
-          console.error('unrecognized color mode button id', elementId);
         }
       });
     });
